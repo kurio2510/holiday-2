@@ -1,37 +1,36 @@
 USE HOLIDAY;
 -- 1."Nước giải khát" category price 10k–50k in stock
-SELECT p.*,c.CategoryName
-FROM Products p
-JOIN Categories c ON p.CategoryID = c.CategoryID
-WHERE c.CategoryName = N'Nước giải khát'
-AND p.Price BETWEEN 10000 AND 50000
-AND p.StockQuantity > 0;
+SELECT *
+FROM products
+WHERE category = 'Nước giải khát'
+AND price BETWEEN 10000 AND 50000
+AND stock > 0;
 
 -- 2. last name "Nguyen" OR living in Hanoi
-SELECT c.CustomerID,c.FullName,c.Address
-FROM Customers c
-WHERE c.FullName LIKE N'Nguyễn%'
-OR c.Address LIKE N'%Hà Nội%';
+SELECT *
+FROM customers
+WHERE full_name LIKE 'Nguyen%'
+OR address LIKE '%Ha Noi%';
 
 -- 3. Order Big to Small
-SELECT o.OrderID,o.OrderDate,o.Status,c.FullName AS CustomerName
-FROM Orders o
-JOIN Customers c ON o.CustomerID = c.CustomerID
-ORDER BY o.OrderDate DESC;
+SELECT o.id AS order_id,o.order_date,o.status,c.full_name AS customer_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+ORDER BY o.order_date DESC;
 
 -- 4. details
-SELECT c.FullName AS CustomerName,o.OrderDate,p.ProductName,od.Quantity,od.UnitPrice
-FROM Orders o
-JOIN Customers c ON o.CustomerID = c.CustomerID
-JOIN OrderDetails od ON o.OrderID = od.OrderID
-JOIN Products p ON od.ProductID = p.ProductID
-WHERE o.OrderID = @OrderID;
+SELECT c.full_name AS customer_name,o.order_date,p.product_name,od.quantity,(od.total_price / od.quantity) AS unit_price
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN order_details od ON o.id = od.order_id
+JOIN products p ON od.product_id = p.id
+WHERE o.id = @order_id;
 
 -- 5.never placed any order
-SELECT c.CustomerID,c.FullName,c.Address
-FROM Customers c
+SELECT *
+FROM customers c
 WHERE NOT EXISTS (
 SELECT 1
-FROM Orders o
-WHERE o.CustomerID = c.CustomerID
+FROM orders o
+WHERE o.customer_id = c.id
 );
