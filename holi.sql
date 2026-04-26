@@ -1,4 +1,4 @@
-USE holiday;
+USE HOLIDAY;
 -- 1."Nước giải khát" category price 10k–50k in stock
 SELECT p.*,c.CategoryName
 FROM Products p
